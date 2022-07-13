@@ -9,7 +9,7 @@ face_cascade = cv2.CascadeClassifier('../_models/haarcascades/haarcascade_fronta
 if face_cascade.empty():
     raise IOError("Unable to load cascade network file")
 
-face_mask = cv2.imread('./anime-mask.jpg', cv2.IMREAD_COLOR)
+face_mask = cv2.imread('./images/anime-mask.jpg', cv2.IMREAD_COLOR)
 h_mas, w_mask = face_mask.shape[:2]
 
 cap = cv2.VideoCapture(0)
@@ -28,38 +28,38 @@ while True:
             # play around with values
             h, w = int(1.1 * h), int(0.75 * w)
             y -= int(0.1 * h)
-            x += int(0.15 * w)
+            x += int(0.08 * w)
 
             # extract roi from original image
             frame_roi = frame[y:y + h, x:x + w]
-            cv2.imshow('frame_roi', frame_roi)
-            cv2.waitKey()
+            # cv2.imshow('frame_roi', frame_roi)
+            # cv2.waitKey()
 
             # resize mask to be same size as detected face
             face_mask_small = cv2.resize(face_mask, (w, h), interpolation=cv2.INTER_AREA)
-            cv2.imshow('face_mask_small', face_mask_small)
-            cv2.waitKey()
+            # cv2.imshow('face_mask_small', face_mask_small)
+            # cv2.waitKey()
 
             # convert color mask image to grayscale to threshold it
             gray_mask = cv2.cvtColor(face_mask_small, cv2.COLOR_BGR2GRAY)
             ret, mask = cv2.threshold(gray_mask, 180, 255, cv2.THRESH_BINARY_INV)
-            cv2.imshow('mask after threshold', mask)
-            cv2.waitKey()
+            # cv2.imshow('mask after threshold', mask)
+            # cv2.waitKey()
 
             # create an inverse mask
             mask_inv = cv2.bitwise_not(mask)
-            cv2.imshow('inverse mask after threshold', mask_inv)
-            cv2.waitKey()
+            # cv2.imshow('inverse mask after threshold', mask_inv)
+            # cv2.waitKey()
 
-            # use the mask to extract the face region of interet
+            # use the mask to extract the face region of interest
             masked_face = cv2.bitwise_and((face_mask_small), face_mask_small, mask=mask)
-            cv2.imshow('AND operation, face_mask_small and MASK', masked_face)
-            cv2.waitKey()
+            # cv2.imshow('AND operation, face_mask_small and MASK', masked_face)
+            # cv2.waitKey()
 
             # use the inverse mask to get remaining part of image
             masked_frame = cv2.bitwise_and(frame_roi, frame_roi, mask=mask_inv)
-            cv2.imshow('masked frame ', masked_frame)
-            cv2.waitKey()
+            # cv2.imshow('masked frame ', masked_frame)
+            # cv2.waitKey()
 
             # add the two images together
             frame[y:y + h, x:x + w] = cv2.add(masked_frame, masked_face)
